@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+
+    <data>
+        <variable
+            name="model"
+            type="org.ochamo.breakingbad.ui.model.BreakingBadCharacterModel"
+            />
+        <variable
+            name="viewModel"
+            type="org.ochamo.breakingbad.ui.viewmodel.BreakingBadListViewModel"
+            />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/breaking_bad_character_image"
+            android:layout_width="@dimen/breaking_bad_image_width"
+            android:layout_height="@dimen/breaking_bad_image_height"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
+            app:imageUrl="@{model.img}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/character_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:textStyle="bold"
+            android:text="Walther White"
+            android:textColor="@color/black"
+            android:textSize="@dimen/breaking_bad_character_name_text_size"
+            app:layout_constraintStart_toEndOf="@id/breaking_bad_character_image"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/character_nick_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:textStyle="bold"
+            android:text="Heisenberg"
+            android:textSize="@dimen/breaking_bad_character_nick_name_text_size"
+            app:layout_constraintStart_toEndOf="@id/breaking_bad_character_image"
+            app:layout_constraintTop_toBottomOf="@id/character_name" />
+
+        <androidx.appcompat.widget.AppCompatImageButton
+            android:id="@+id/set_breaking_bad_to_favorite"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginEnd="16dp"
+            android:background="@null"
+            android:src="@drawable/ic_favorite"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="breaking_bad_image_height">100dp</dimen>
+    <dimen name="breaking_bad_character_name_text_size">20sp</dimen>
+    <dimen name="breaking_bad_image_width">50dp</dimen>
+    <dimen name="breaking_bad_character_nick_name_text_size">12sp</dimen>
+</resources>
