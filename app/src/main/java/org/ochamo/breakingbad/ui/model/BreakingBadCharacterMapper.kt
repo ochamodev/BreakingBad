@@ -1,15 +1,23 @@
 package org.ochamo.breakingbad.ui.model
 
+import androidx.databinding.ObservableBoolean
+import org.ochamo.breakingbad.data.local.entity.BreakingBadFavoriteItem
 import org.ochamo.breakingbad.data.model.BreakingBadCharacter
 
 class BreakingBadCharacterMapper {
-    fun map(items: ArrayList<BreakingBadCharacter>): ArrayList<BreakingBadCharacterModel> {
+    fun map(items: ArrayList<BreakingBadCharacter>, favorites: HashMap<Int, BreakingBadFavoriteItem>): ArrayList<BreakingBadCharacterModel> {
         return items.map {
-            map(it)
+            map(it, favorites)
         } as ArrayList<BreakingBadCharacterModel>
     }
 
-    fun map(item: BreakingBadCharacter): BreakingBadCharacterModel {
+    fun map(item: BreakingBadCharacter, favorites: HashMap<Int, BreakingBadFavoriteItem>): BreakingBadCharacterModel {
+
+        val favoriteItem = favorites[item.id]
+        var isFavorite = false
+        if (favoriteItem != null) {
+            isFavorite = favoriteItem.isFavorite
+        }
         return BreakingBadCharacterModel(
             id = item.id,
             name = item.name,
@@ -21,7 +29,7 @@ class BreakingBadCharacterMapper {
             appearance = item.appearance,
             portrayed = item.portrayed,
             category = item.category,
-            isFavorite = false
+            isFavorite = ObservableBoolean(isFavorite)
         )
     }
 

@@ -1,5 +1,7 @@
 package org.ochamo.breakingbad.ui.model
 
+import androidx.databinding.ObservableBoolean
+
 data class BreakingBadCharacterModel(
     val id: Int,
     val name: String,
@@ -8,9 +10,9 @@ data class BreakingBadCharacterModel(
     val img: String,
     val status: String,
     val nickname: String,
-    val appearance: String,
+    val appearance: ArrayList<String>,
     val portrayed: String,
-    val category: ArrayList<String>,
-    var isFavorite: Boolean
+    val category: String,
+    var isFavorite: ObservableBoolean
 )
 
