@@ -1,7 +1,10 @@
 package org.ochamo.breakingbad.data.model
 
+import com.google.gson.annotations.SerializedName
+
 
 data class BreakingBadCharacter(
+    @SerializedName("char_id")
     val id: Int,
     val name: String,
     val birthday: String,
@@ -9,7 +12,7 @@ data class BreakingBadCharacter(
     val img: String,
     val status: String,
     val nickname: String,
-    val appearance: String,
+    val appearance: ArrayList<String>,
     val portrayed: String,
-    val category: ArrayList<String>
+    val category: String
 )
