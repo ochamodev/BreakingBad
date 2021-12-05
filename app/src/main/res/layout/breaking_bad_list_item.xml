@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    >
 
     <data>
         <variable
@@ -10,12 +13,17 @@
             name="viewModel"
             type="org.ochamo.breakingbad.ui.viewmodel.BreakingBadListViewModel"
             />
+        <variable
+            name="sharedViewModel"
+            type="org.ochamo.breakingbad.ui.viewmodel.SharedCharacterItemViewModel"
+            />
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:onClick="@{() -> viewModel.onClick(model)}"
+        >
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/breaking_bad_character_image"
@@ -36,7 +44,7 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             android:textStyle="bold"
-            android:text="Walther White"
+            android:text="@{model.name}"
             android:textColor="@color/black"
             android:textSize="@dimen/breaking_bad_character_name_text_size"
             app:layout_constraintStart_toEndOf="@id/breaking_bad_character_image"
@@ -49,7 +57,7 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
             android:textStyle="bold"
-            android:text="Heisenberg"
+            android:text="@{model.nickname}"
             android:textSize="@dimen/breaking_bad_character_nick_name_text_size"
             app:layout_constraintStart_toEndOf="@id/breaking_bad_character_image"
             app:layout_constraintTop_toBottomOf="@id/character_name" />
@@ -61,6 +69,8 @@
             android:layout_marginEnd="16dp"
             android:background="@null"
             android:src="@drawable/ic_favorite"
+            android:onClick="@{() -> sharedViewModel.markOrUnMarkAsFavorite(model)}"
+            app:markAsFavorite="@{model.isFavorite()}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
