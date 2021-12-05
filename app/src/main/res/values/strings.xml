@@ -2,4 +2,7 @@
     <string name="app_name">BreakingBad</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="occupation_text">Occupation:</string>
+    <string name="status_text">Status:</string>
+    <string name="portrayed_text">Portrayed</string>
 </resources>
