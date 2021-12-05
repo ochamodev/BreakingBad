@@ -43,9 +43,15 @@ class BreakingBadListAdapter(
                 characters.addAll(newItems)
                 notifyItemRangeChanged(itemCount - 1, newItems.size)
             }*/
-            characters = newItems
-            notifyItemRangeChanged(last -1, newItems.size)
+            characters.clear()
+            characters.addAll(newItems)
+            notifyDataSetChanged()
         }
+    }
+
+    fun updateItem(item: BreakingBadCharacterModel) {
+        val index = getItemPosition(item)
+        notifyItemChanged(index)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BreakingBadListViewHolder {
@@ -58,5 +64,9 @@ class BreakingBadListAdapter(
     }
 
     override fun getItemCount(): Int = characters.size
+
+    fun getItemPosition(item: BreakingBadCharacterModel): Int{
+        return characters.indexOf(item)
+    }
 
 }

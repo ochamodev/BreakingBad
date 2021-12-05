@@ -93,10 +93,17 @@ class BreakingBadCharactersList : Fragment() {
 
         })
 
+        sharedCharacterItemViewModel.markAsFavorite.observe(this.viewLifecycleOwner, EventObserver {
+            breakingBadListViewModel.updateItem(it)
+            breakingBadListViewModel.getFavorites()
+            breakingBadListViewModel.reorderItems()
+        })
+
     }
 
     private fun getCharacters() {
         if (breakingBadListViewModel.listOfCharacters.value!!.isEmpty()) {
+            breakingBadListViewModel.getFavorites()
             breakingBadListViewModel.getCharacters()
         }
     }

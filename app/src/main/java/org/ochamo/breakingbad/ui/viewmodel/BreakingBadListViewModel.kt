@@ -7,6 +7,8 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import org.ochamo.breakingbad.data.local.LocalDbRepository
+import org.ochamo.breakingbad.data.local.LocalDbRepositoryImpl
 import org.ochamo.breakingbad.data.local.entity.BreakingBadFavoriteItem
 import org.ochamo.breakingbad.data.repository.BreakingBadRepository
 import org.ochamo.breakingbad.ui.model.BreakingBadCharacterMapper
@@ -16,7 +18,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class BreakingBadListViewModel @Inject constructor(
-    val breakingBadRepository: BreakingBadRepository
+    val breakingBadRepository: BreakingBadRepository,
+    val localDbRepositoryImpl: LocalDbRepository
 ) : ViewModel() {
     private val _dataLoading = MutableLiveData<Boolean>(false)
     val dataLoading: LiveData<Boolean> = _dataLoading
@@ -25,6 +28,9 @@ class BreakingBadListViewModel @Inject constructor(
         mutableSetOf()
     )
     val listOfCharacters: LiveData<MutableSet<BreakingBadCharacterModel>> = _listOfCharacters
+
+    private val _listOfFavorites = MutableLiveData<HashMap<Int, BreakingBadFavoriteItem>>()
+    val listOfFavorites: LiveData<HashMap<Int, BreakingBadFavoriteItem>> = _listOfFavorites
 
     private val _error = MutableLiveData<String>()
     val error: LiveData<String> = _error
@@ -42,6 +48,21 @@ class BreakingBadListViewModel @Inject constructor(
     }
 
 
+    fun updateItem(item: BreakingBadCharacterModel) {
+        var element = listOfCharacters.value!!.find { it.id == item.id }
+        element!!.isFavorite = item.isFavorite
+    }
+
+    fun getFavorites() {
+        viewModelScope.launch {
+            val result = localDbRepositoryImpl.getFavoriteItems()
+            if (result.success != null) {
+                _listOfFavorites.value = result.success!!
+            } else {
+                _error.value = result.error!!.message
+            }
+        }
+    }
 
     fun getCharacters() {
         val paginationLimit = 20
@@ -64,9 +85,9 @@ class BreakingBadListViewModel @Inject constructor(
             val mapper = BreakingBadCharacterMapper()
             if (result.success != null) {
                 if (result.success.isNotEmpty()) {
-                    val items: MutableSet<BreakingBadCharacterModel> = _listOfCharacters.value!!
-                    items.addAll(mapper.map(result.success, hashMapOf<Int, BreakingBadFavoriteItem>()))
-                    _listOfCharacters.value = items
+                    val items: MutableSet<BreakingBadCharacterModel> = listOfCharacters.value!!
+                    items.addAll(mapper.map(result.success, listOfFavorites.value!!))
+                    reorderItems()
                 }
             } else {
                 _error.value = result.error!!.message
@@ -74,13 +95,13 @@ class BreakingBadListViewModel @Inject constructor(
         }
     }
 
-    fun reorderItems(items : MutableSet<BreakingBadCharacterModel>) {
-        viewModelScope.launch(Dispatchers.Default) {
-            val reordered =
-            _listOfCharacters.value!!.sortedBy {
-                it.isFavorite.get()
-            }.toMutableSet()
-            _listOfCharacters.value = reordered
+    fun reorderItems() {
+        viewModelScope.launch {
+            val result = ArrayList(listOfCharacters.value!!)
+                .sortedWith(compareBy<BreakingBadCharacterModel>( {!it.isFavorite.get()})).toMutableSet()
+            _listOfCharacters.value = result
+
+
         }
     }
 
