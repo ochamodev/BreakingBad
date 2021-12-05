@@ -7,7 +7,10 @@ import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import org.ochamo.breakingbad.data.network.BreakingBadService
+import org.ochamo.breakingbad.data.repository.BreakingBadRepository
+import org.ochamo.breakingbad.data.repository.BreakingBadRepositoryImpl
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
@@ -18,11 +21,19 @@ object NetworkModule {
 
     @Singleton
     @Provides
-    fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {
+    fun provideRetrofit(): Retrofit {
+
+        val logging = HttpLoggingInterceptor()
+        logging.setLevel(HttpLoggingInterceptor.Level.BODY)
+        val httpClient = OkHttpClient.Builder()
+
+        httpClient.addInterceptor(logging)
+
         return Retrofit
             .Builder()
             .addConverterFactory(GsonConverterFactory.create())
             .baseUrl("https://www.breakingbadapi.com/api/")
+            .client(httpClient.build())
             .build()
     }
 
@@ -36,6 +47,18 @@ object NetworkModule {
     @Provides
     fun provideIoDispatcher(): CoroutineDispatcher {
         return Dispatchers.IO;
+    }
+
+    @Singleton
+    @Provides
+    fun provideBreakingBadRepository(
+        breakingBadService: BreakingBadService,
+        ioDispatcher: CoroutineDispatcher
+    ): BreakingBadRepository {
+        return BreakingBadRepositoryImpl(
+            breakingBadService,
+            ioDispatcher
+        )
     }
 
 }
