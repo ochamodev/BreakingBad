@@ -21,8 +21,8 @@ class BreakingBadListViewModel @Inject constructor(
     val breakingBadRepository: BreakingBadRepository,
     val localDbRepositoryImpl: LocalDbRepository
 ) : ViewModel() {
-    private val _dataLoading = MutableLiveData<Boolean>(false)
-    val dataLoading: LiveData<Boolean> = _dataLoading
+    private val _dataLoading = MutableLiveData<Event<Boolean>>(Event(false))
+    val dataLoading : LiveData<Event<Boolean>> = _dataLoading
 
     private val _listOfCharacters = MutableLiveData<MutableSet<BreakingBadCharacterModel>>(
         mutableSetOf()
@@ -40,7 +40,7 @@ class BreakingBadListViewModel @Inject constructor(
     val selectedItem: LiveData<Event<BreakingBadCharacterModel>> = _selectedItem
 
     fun updateLoadingStatus(status: Boolean) {
-        _dataLoading.value = status
+        _dataLoading.postValue(Event(status))
     }
 
     fun onClick(selectedModel: BreakingBadCharacterModel) {
@@ -77,6 +77,7 @@ class BreakingBadListViewModel @Inject constructor(
     fun getBreakingBadCharacters(limit: Int, offset: Int) {
         viewModelScope.launch {
             updateLoadingStatus(true)
+
             val result = breakingBadRepository
                 .getTasks(
                     limit,
@@ -85,9 +86,12 @@ class BreakingBadListViewModel @Inject constructor(
             val mapper = BreakingBadCharacterMapper()
             if (result.success != null) {
                 if (result.success.isNotEmpty()) {
+
                     val items: MutableSet<BreakingBadCharacterModel> = listOfCharacters.value!!
                     items.addAll(mapper.map(result.success, listOfFavorites.value!!))
                     reorderItems()
+                } else {
+                    updateLoadingStatus(false)
                 }
             } else {
                 _error.value = result.error!!.message
@@ -100,8 +104,6 @@ class BreakingBadListViewModel @Inject constructor(
             val result = ArrayList(listOfCharacters.value!!)
                 .sortedWith(compareBy<BreakingBadCharacterModel>( {!it.isFavorite.get()})).toMutableSet()
             _listOfCharacters.value = result
-
-
         }
     }
 

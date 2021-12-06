@@ -13,6 +13,14 @@ import org.ochamo.breakingbad.R
 fun loadImage(view: AppCompatImageView, url: String) {
     Glide.with(view.context)
         .load(url)
+        .dontAnimate()
+        .let { request ->
+            if (view.drawable != null) {
+                request.placeholder(view.drawable.constantState?.newDrawable()?.mutate())
+            } else {
+                request
+            }
+        }
         .into(view)
 }
 

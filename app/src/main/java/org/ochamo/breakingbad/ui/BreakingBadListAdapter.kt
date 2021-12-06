@@ -34,6 +34,8 @@ class BreakingBadListAdapter(
         if (characters.isEmpty()) {
             characters.addAll(newItems)
             notifyDataSetChanged()
+            viewModel.updateLoadingStatus(false)
+
         } else {
             val last = itemCount
            /*val news = newItems.size
@@ -46,6 +48,8 @@ class BreakingBadListAdapter(
             characters.clear()
             characters.addAll(newItems)
             notifyDataSetChanged()
+            viewModel.updateLoadingStatus(false)
+
         }
     }
 
@@ -69,4 +73,9 @@ class BreakingBadListAdapter(
         return characters.indexOf(item)
     }
 
+    override fun getItemId(position: Int): Long {
+        return characters.elementAt(position).id.toLong()
+    }
+
 }
+

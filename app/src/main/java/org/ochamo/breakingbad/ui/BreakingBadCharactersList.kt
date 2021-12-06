@@ -13,6 +13,8 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.SimpleItemAnimator
+import androidx.transition.Visibility
 import dagger.hilt.android.AndroidEntryPoint
 import org.ochamo.breakingbad.R
 import org.ochamo.breakingbad.databinding.FragmentBreakingBadCharactersListBinding
@@ -58,16 +60,27 @@ class BreakingBadCharactersList : Fragment() {
             sharedViewModel = sharedCharacterItemViewModel
         )
 
+        breakingBadListAdapter.setHasStableIds(true)
         binding.breakingBadRecyclerView.adapter = breakingBadListAdapter
-        binding.breakingBadRecyclerView.layoutManager = LinearLayoutManager(context)
-
-
 
     }
 
     private fun setupListeners() {
         breakingBadListViewModel.listOfCharacters.observe(this.viewLifecycleOwner, {
             breakingBadListAdapter.addMoreItems(it)
+        })
+
+
+        breakingBadListViewModel.dataLoading.observe(this.viewLifecycleOwner, EventObserver {
+
+            Log.d("HOLAAAAA****", it.toString())
+            if (it) {
+                binding.breakingBadRecyclerView.visibility = View.GONE
+                binding.progressBar.visibility = View.VISIBLE
+            } else {
+                binding.breakingBadRecyclerView.visibility = View.VISIBLE
+                binding.progressBar.visibility = View.GONE
+            }
         })
 
         binding.breakingBadRecyclerView.addOnScrollListener(object:
@@ -106,6 +119,7 @@ class BreakingBadCharactersList : Fragment() {
             breakingBadListViewModel.getFavorites()
             breakingBadListViewModel.getCharacters()
         }
+
     }
 
 }

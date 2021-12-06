@@ -48,7 +48,7 @@ class SharedCharacterItemViewModel @Inject constructor(
 
 
     fun setItem(selected: BreakingBadCharacterModel) {
-        _breakingBadItem.value = selected
+        _breakingBadItem.postValue(selected)
     }
 
 
